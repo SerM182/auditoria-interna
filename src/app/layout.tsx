@@ -11,12 +11,12 @@ export const metadata: Metadata = {
   description: "Sistema de Seguimiento de Auditoría Interna",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const user = cookieStore.get("auth_user")?.value;
 
   return (
