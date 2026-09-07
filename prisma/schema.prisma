@@ -1,0 +1,29 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Auditoria {
+  id                              Int       @id @default(autoincrement())
+  codigoProyecto                  String
+  fecha                           DateTime
+  nHallazgos                      Int
+  gerenciaResponsable             String
+  descripcionAccionCorrectiva     String
+  fechaImplementacionCorreccion   DateTime?
+  seguimientosAcciones            String?
+  observaciones                   String?
+  fechaVerificacionImplementacion DateTime?
+  fechaEvaluacionEficacia         DateTime?
+  evaluacionEficacia              String?
+  responsable                     String
+  estadoObservacion               String
+
+  createdAt                       DateTime  @default(now())
+  updatedAt                       DateTime  @updatedAt
+}
