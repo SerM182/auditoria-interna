@@ -68,6 +68,10 @@ export default function NuevoRegistro() {
             <input required name="gerenciaResponsable" type="text" className="w-full border-gray-300 border rounded-md p-2.5 focus:ring-2 focus:ring-[#00a2b9] focus:border-[#00a2b9] outline-none transition-all" />
           </div>
           <div className="md:col-span-2">
+            <label className="block text-sm font-bold text-gray-700 mb-1">Descripción del Hallazgo <span className="text-red-500">*</span></label>
+            <textarea required name="descripcionHallazgo" rows={3} className="w-full border-gray-300 border rounded-md p-2.5 focus:ring-2 focus:ring-[#00a2b9] focus:border-[#00a2b9] outline-none transition-all"></textarea>
+          </div>
+          <div className="md:col-span-2">
             <label className="block text-sm font-bold text-gray-700 mb-1">Descripción de la Acción Correctiva <span className="text-red-500">*</span></label>
             <textarea required name="descripcionAccionCorrectiva" rows={3} className="w-full border-gray-300 border rounded-md p-2.5 focus:ring-2 focus:ring-[#00a2b9] focus:border-[#00a2b9] outline-none transition-all"></textarea>
           </div>

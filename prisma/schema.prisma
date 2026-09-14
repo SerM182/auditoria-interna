@@ -13,6 +13,7 @@ model Auditoria {
   fecha                           DateTime
   nHallazgos                      Int
   gerenciaResponsable             String
+  descripcionHallazgo             String
   descripcionAccionCorrectiva     String
   fechaImplementacionCorreccion   DateTime?
   seguimientosAcciones            String?
