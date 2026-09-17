@@ -174,10 +174,16 @@ export default function DashboardClient({ registros }: { registros: any[] }) {
                       </span>
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap text-sm">
-                      <Link href={`/editar/${reg.id}`} className="inline-flex items-center gap-1.5 border border-amber-300 bg-amber-50/60 text-amber-800 hover:bg-amber-100 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">
-                        <Edit2 size={12} />
-                        Modificar
-                      </Link>
+                      <div className="flex gap-2">
+                        <Link href={`/ver/${reg.id}`} className="inline-flex items-center gap-1.5 border border-[#0098B3]/30 bg-[#e6f7fa] text-[#0098B3] hover:bg-[#0098B3]/20 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">
+                          <FileText size={12} />
+                          Ver
+                        </Link>
+                        <Link href={`/editar/${reg.id}`} className="inline-flex items-center gap-1.5 border border-amber-300 bg-amber-50/60 text-amber-800 hover:bg-amber-100 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">
+                          <Edit2 size={12} />
+                          Modificar
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))
