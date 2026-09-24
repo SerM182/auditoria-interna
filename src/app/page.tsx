@@ -35,24 +35,9 @@ export default async function Home() {
         console.log(`Se cargaron ${registros.length} registros desde SharePoint.`);
       }
     } 
-    
-    // Si la URL no estaba o hubo un error y registros sigue vacío, usamos Postgres
-    if (!urlPA || registros.length === 0) {
-      console.log("Usando fallback a base de datos Postgres (Prisma)...");
-      registros = await prisma.auditoria.findMany({
-        orderBy: { createdAt: "desc" },
-        select: {
-          id: true,
-          codigoProyecto: true,
-          fecha: true,
-          nHallazgos: true,
-          gerenciaResponsable: true,
-          responsable: true,
-          estadoObservacion: true,
-          fechaImplementacionCorreccion: true,
-          createdAt: true,
-        },
-      });
+    // Eliminamos el fallback a Postgres temporalmente para forzar ver qué devuelve SharePoint
+    if (!urlPA) {
+      console.log("No hay URL de Power Automate configurada.");
     }
   } catch (error) {
     console.error("Error cargando registros:", error);
