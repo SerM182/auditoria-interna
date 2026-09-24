@@ -2,12 +2,46 @@
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
-import { ChevronLeft, Calendar, FileText, CheckCircle, Clock, Check, AlertCircle, Edit2, User } from 'lucide-react';
+import { ChevronLeft, Calendar, FileText, CheckCircle, Clock, Check, AlertCircle, Edit2, User, AlarmClock, CalendarClock } from 'lucide-react';
+import { diasRestantes, situacionPlazo } from "@/lib/auditoria";
 
 function formatDate(dateString: string | null) {
   if (!dateString) return "No especificada";
   const date = new Date(dateString);
   return date.toLocaleDateString("es-AR");
+}
+
+/** Mismo semáforo de vencimientos que el panel, sobre el header oscuro de la ficha. */
+function ChipPlazo({
+  estadoObservacion,
+  fechaImplementacionCorreccion,
+}: {
+  estadoObservacion: string;
+  fechaImplementacionCorreccion: string | null;
+}) {
+  const situacion = situacionPlazo(estadoObservacion, fechaImplementacionCorreccion);
+  if (situacion !== 'vencido' && situacion !== 'por-vencer') return null;
+
+  const dias = diasRestantes(fechaImplementacionCorreccion) ?? 0;
+  const vencido = situacion === 'vencido';
+  const atraso = Math.abs(dias);
+
+  return (
+    <span
+      className={`px-3 py-1 inline-flex items-center gap-1.5 text-xs font-bold rounded-full border ${
+        vencido
+          ? 'bg-rose-500/20 text-rose-200 border-rose-400/40'
+          : 'bg-amber-500/20 text-amber-200 border-amber-400/40'
+      }`}
+    >
+      {vencido ? <AlarmClock size={12} /> : <CalendarClock size={12} />}
+      {vencido
+        ? `Plazo vencido hace ${atraso} ${atraso === 1 ? 'día' : 'días'}`
+        : dias === 0
+          ? 'El plazo vence hoy'
+          : `Vence en ${dias} ${dias === 1 ? 'día' : 'días'}`}
+    </span>
+  );
 }
 
 export default function VerRegistro({ params }: { params: Promise<{ id: string }> }) {
@@ -78,6 +112,10 @@ export default function VerRegistro({ params }: { params: Promise<{ id: string }
                   data.estadoObservacion === 'En Proceso' ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : 'bg-rose-500/20 text-rose-300 border-rose-500/30'}`}>
                 {data.estadoObservacion}
               </span>
+              <ChipPlazo
+                estadoObservacion={data.estadoObservacion}
+                fechaImplementacionCorreccion={data.fechaImplementacionCorreccion}
+              />
             </div>
             <h1 className="text-3xl font-black mb-2">{data.codigoProyecto}</h1>
             <p className="text-[#0098B3] font-medium text-lg flex items-center gap-2">

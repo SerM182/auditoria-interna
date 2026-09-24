@@ -1,0 +1,2 @@
+Titulo,codigoProyecto,fecha,nHallazgos,gerenciaResponsable,descripcionHallazgo,descripcionAccionCorrectiva,fechaImplementacionCorreccion,seguimientosAcciones,observaciones,fechaVerificacionImplementacion,fechaEvaluacionEficacia,evaluacionEficacia,responsable,estadoObservacion
+"Registro Auditoría","PROY-001 Ejemplo","26/01/2026",1,"Obras","Falta de responsable ambiental.","Se contratará a un responsable.","10/02/2026","Búsqueda iniciada.","Ninguna.","20/02/2026","01/03/2026","Eficaz.","Brullo","Pendiente"
