@@ -14,13 +14,32 @@ export async function GET() {
       }
 
       // Mapeamos los datos para que coincidan con lo que espera la app
-      const auditorias = sharepointData.map((item: any) => ({
-        ...item,
-        id: item.ID || item.Id || item.id,
-        // Los campos de Elección (Choice) en SharePoint a veces vienen como un objeto { Value: "Texto" }
-        estadoObservacion: typeof item.estadoObservacion === 'object' ? item.estadoObservacion.Value : item.estadoObservacion,
-        codigoProyecto: typeof item.codigoProyecto === 'object' ? item.codigoProyecto.Value : item.codigoProyecto,
-      }));
+      const auditorias = sharepointData.map((item: any) => {
+        const extractValue = (val: any) => {
+          if (Array.isArray(val) && val.length > 0) return val[0].Value;
+          if (typeof val === 'object' && val !== null) return val.Value;
+          return val;
+        };
+
+        return {
+          ...item,
+          id: item.ID || item.Id || item.id,
+          codigoProyecto: extractValue(item.field_1 || item.codigoProyecto),
+          fecha: item.field_2 || item.fecha,
+          nHallazgos: item.field_3 || item.nHallazgos,
+          gerenciaResponsable: item.field_4 || item.gerenciaResponsable,
+          descripcionHallazgo: item.field_5 || item.descripcionHallazgo,
+          descripcionAccionCorrectiva: item.field_6 || item.descripcionAccionCorrectiva,
+          fechaImplementacionCorreccion: item.field_7 || item.fechaImplementacionCorreccion,
+          seguimientosAcciones: item.field_8 || item.seguimientosAcciones,
+          observaciones: item.field_9 || item.observaciones,
+          fechaVerificacionImplementacion: item.field_10 || item.fechaVerificacionImplementacion,
+          fechaEvaluacionEficacia: item.field_11 || item.fechaEvaluacionEficacia,
+          evaluacionEficacia: item.field_12 || item.evaluacionEficacia,
+          responsable: item.field_13 || item.responsable,
+          estadoObservacion: extractValue(item.field_14 || item.estadoObservacion),
+        };
+      });
 
       // Ordenar por ID descendente (los más nuevos primero)
       auditorias.sort((a: any, b: any) => b.id - a.id);
