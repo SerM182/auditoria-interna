@@ -5,25 +5,19 @@ export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   let registros = [];
-  let debugInfo = "";
 
   try {
     const urlPA = process.env.POWER_AUTOMATE_GET_URL;
-    debugInfo += `URL config: ${urlPA ? 'SI' : 'NO'} | `;
 
     if (urlPA) {
       const res = await fetch(urlPA, { cache: 'no-store' });
-      debugInfo += `Fetch status: ${res.status} | `;
       
       if (res.ok) {
         let sharepointData = await res.json();
-        debugInfo += `Raw isArray: ${Array.isArray(sharepointData)} | `;
         
         if (!Array.isArray(sharepointData) && sharepointData.value) {
           sharepointData = sharepointData.value;
         }
-
-        debugInfo += `Data length: ${sharepointData?.length} | `;
 
         registros = sharepointData.map((item: any) => {
           const extractValue = (val: any) => {
@@ -52,25 +46,18 @@ export default async function Home() {
           };
         });
 
-        debugInfo += `Mapped records: ${registros.length}`;
         registros.sort((a: any, b: any) => b.id - a.id);
       } else {
-        debugInfo += `Error msg: ${res.statusText}`;
+        console.error(`Error de fetch a PA: ${res.statusText}`);
       }
     } else {
-      debugInfo += "No urlPA configured.";
+      console.log("No hay urlPA configurada.");
     }
   } catch (error: any) {
-    debugInfo += `EXCEPTION: ${error.message}`;
     console.error("Error cargando registros:", error);
   }
 
   return (
-    <>
-      <div className="bg-slate-800 text-green-400 p-2 font-mono text-xs text-center break-all w-full">
-        DEBUG VERCEL: {debugInfo}
-      </div>
-      <DashboardClient registros={registros} />
-    </>
+    <DashboardClient registros={registros} />
   );
 }
