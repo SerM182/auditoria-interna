@@ -61,8 +61,30 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    
-    // Convert string dates to Date objects if they exist
+
+    // Si tenemos la URL de Power Automate configurada para Crear (POST)
+    if (process.env.POWER_AUTOMATE_POST_URL) {
+      // Formateamos las fechas a string YYYY-MM-DD para que SharePoint / Power Automate las entienda fácil
+      const payload = {
+        ...data,
+        nHallazgos: parseInt(data.nHallazgos, 10),
+      };
+
+      const res = await fetch(process.env.POWER_AUTOMATE_POST_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Error en Power Automate POST: ${res.statusText}`);
+      }
+
+      const result = await res.json().catch(() => ({}));
+      return NextResponse.json(result);
+    }
+
+    // Fallback a Prisma Postgres
     const parsedData = {
       ...data,
       fecha: new Date(data.fecha),
