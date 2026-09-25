@@ -17,13 +17,21 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const user = cookieStore.get("auth_user")?.value;
+  const userCookie = cookieStore.get("auth_user")?.value;
+  let userEmail = "";
+  if (userCookie) {
+    try {
+      userEmail = JSON.parse(userCookie).email;
+    } catch {
+      userEmail = userCookie;
+    }
+  }
 
   return (
     <html lang="es">
       <body className={`${inter.className} bg-gray-50 text-gray-900`}>
         {/* Solo mostrar la navbar si hay un usuario (no estamos en el login) */}
-        {user && (
+        {userCookie && (
           <nav className="bg-[#0098B3] text-white shadow-md relative z-10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between h-16 items-center">
@@ -36,7 +44,7 @@ export default async function RootLayout({
                 <div className="flex items-center gap-4">
                   <div className="hidden sm:flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-3 py-1">
                     <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                    <span className="text-sm font-medium">{user}</span>
+                    <span className="text-sm font-medium">{userEmail}</span>
                   </div>
                   <form action={logoutAction}>
                     <button type="submit" className="flex items-center gap-2 text-sm font-bold hover:bg-white/20 px-3 py-1.5 rounded-lg transition-colors">
