@@ -14,7 +14,7 @@ export default function UsuariosAdmin() {
   const loadUsers = async () => {
     const res = await getUsersAction();
     if (res.success) {
-      setUsers(res.users);
+      setUsers(res.users || []);
     } else {
       setError(res.error || "Error al cargar usuarios");
     }
