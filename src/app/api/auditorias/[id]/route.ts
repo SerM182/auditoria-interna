@@ -59,10 +59,24 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const data = await request.json();
 
     if (process.env.POWER_AUTOMATE_PUT_URL) {
+      let equipo = "Sin equipo";
+      try {
+        const { cookies } = await import("next/headers");
+        const cookieStore = await cookies();
+        const authCookie = cookieStore.get("auth_user")?.value;
+        if (authCookie) {
+          const session = JSON.parse(authCookie);
+          equipo = session.role;
+        }
+      } catch (e) {
+        console.log("Error leyendo cookie en PUT", e);
+      }
+
       const payload = {
         ...data,
         id: id,
         nHallazgos: parseInt(data.nHallazgos, 10),
+        equipo: equipo
       };
 
       const res = await fetch(process.env.POWER_AUTOMATE_PUT_URL, {

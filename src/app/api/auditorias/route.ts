@@ -62,12 +62,26 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
 
+    let equipo = "Sin equipo";
+    try {
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      const authCookie = cookieStore.get("auth_user")?.value;
+      if (authCookie) {
+        const session = JSON.parse(authCookie);
+        equipo = session.role;
+      }
+    } catch (e) {
+      console.log("Error leyendo cookie en POST", e);
+    }
+
     // Si tenemos la URL de Power Automate configurada para Crear (POST)
     if (process.env.POWER_AUTOMATE_POST_URL) {
       // Formateamos las fechas a string YYYY-MM-DD para que SharePoint / Power Automate las entienda fácil
       const payload = {
         ...data,
         nHallazgos: parseInt(data.nHallazgos, 10),
+        equipo: equipo
       };
 
       const res = await fetch(process.env.POWER_AUTOMATE_POST_URL, {
