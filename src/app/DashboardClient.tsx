@@ -394,41 +394,7 @@ export default function DashboardClient({ registros }: { registros: Registro[] }
         />
       </div>
 
-      {total > 0 && (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-6 mb-6">
-          <div className="flex items-center gap-2 mb-5">
-            <PieChart size={18} className="text-[#0098B3]" />
-            <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wider">Distribución por Estado</h2>
-          </div>
-          <div className="flex flex-col sm:flex-row items-center gap-8">
-            <div
-              className="w-40 h-40 rounded-full shrink-0 relative"
-              style={{ background: `conic-gradient(${gradientStops})` }}
-            >
-              <div className="absolute inset-[18%] rounded-full bg-white flex flex-col items-center justify-center shadow-inner">
-                <span className="text-2xl font-black text-slate-800">{total}</span>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total</span>
-              </div>
-            </div>
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
-              {chartData.map((d) => (
-                <div key={d.label} className="flex items-center gap-3 bg-slate-50 rounded-lg border border-slate-100 p-3">
-                  <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: d.color }}></span>
-                  <div>
-                    <p className="text-xs font-semibold text-slate-500">{d.label}</p>
-                    <p className="text-lg font-black text-slate-800">
-                      {d.value}
-                      <span className="text-xs font-semibold text-slate-400 ml-1">
-                        ({Math.round((d.value / totalChart) * 100)}%)
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+
 
       <div className="bg-white p-4 rounded-xl shadow-xs border border-slate-200 mb-6 flex flex-col sm:flex-row gap-4 items-center">
         <div className="flex-1 w-full relative">
