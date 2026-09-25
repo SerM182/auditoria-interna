@@ -1,10 +1,17 @@
-import { prisma } from '@/lib/prisma';
+import { cookies } from 'next/headers';
 import DashboardClient from "./DashboardClient";
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  let registros = [];
+  let registros: any[] = [];
+  
+  const cookieStore = await cookies();
+  const authCookie = cookieStore.get("auth_user")?.value;
+  let session = null;
+  if (authCookie) {
+    try { session = JSON.parse(authCookie); } catch {}
+  }
 
   try {
     const urlPA = process.env.POWER_AUTOMATE_GET_URL;
@@ -47,6 +54,23 @@ export default async function Home() {
         });
 
         registros.sort((a: any, b: any) => b.id - a.id);
+        
+        // APLICAR FILTRO POR ROL
+        if (session) {
+          if (session.role === 'auditoria_interna') {
+            registros = registros.filter((r: any) => 
+              String(r.gerenciaResponsable).toLowerCase().includes('interna') || 
+              String(r.responsable).toLowerCase() === session.email.toLowerCase()
+            );
+          } else if (session.role === 'auditoria_operaciones') {
+            registros = registros.filter((r: any) => 
+              String(r.gerenciaResponsable).toLowerCase().includes('operaciones') ||
+              String(r.responsable).toLowerCase() === session.email.toLowerCase()
+            );
+          }
+          // 'admin' y 'gerente' ven todos
+        }
+        
       } else {
         console.error(`Error de fetch a PA: ${res.statusText}`);
       }
@@ -58,6 +82,6 @@ export default async function Home() {
   }
 
   return (
-    <DashboardClient registros={registros} />
+    <DashboardClient registros={registros} session={session} />
   );
 }

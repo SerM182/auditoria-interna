@@ -74,7 +74,7 @@ const PRIORIDAD_PLAZO: Record<SituacionPlazo, number> = {
   cerrado: 4,
 };
 
-export default function DashboardClient({ registros }: { registros: Registro[] }) {
+export default function DashboardClient({ registros, session }: { registros: Registro[], session?: any }) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [vista, setVista] = useState<Vista>("Todos");
@@ -303,6 +303,11 @@ export default function DashboardClient({ registros }: { registros: Registro[] }
           <p className="text-slate-500 mt-1 font-medium">Anexo II • Acciones Correctivas de Auditoría</p>
         </div>
         <div className="flex gap-2 flex-wrap">
+          {session?.role === 'admin' && (
+            <Link href="/admin/usuarios" className="bg-purple-100 border border-purple-200 hover:bg-purple-200 text-purple-700 px-4 py-2.5 rounded-lg shadow-sm font-semibold transition-colors flex items-center gap-2">
+              Gestionar Usuarios
+            </Link>
+          )}
           <a
             href={exportHref}
             className="bg-white border border-slate-200 hover:border-[#0098B3]/50 hover:bg-[#e6f7fa] text-slate-700 hover:text-[#0098B3] px-4 py-2.5 rounded-lg shadow-sm font-semibold transition-colors flex items-center gap-2"
@@ -320,6 +325,12 @@ export default function DashboardClient({ registros }: { registros: Registro[] }
             <Plus size={18} />
             Nuevo Registro
           </Link>
+          <button onClick={async () => {
+             const { logoutAction } = await import('@/app/actions');
+             logoutAction();
+          }} className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-lg shadow-sm font-semibold transition-colors">
+            Salir
+          </button>
         </div>
       </div>
 

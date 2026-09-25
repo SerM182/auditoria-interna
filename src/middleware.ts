@@ -19,9 +19,26 @@ export function middleware(request: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
-  // Si no es login ni API, y no tiene cookie, redirigir al login
   if (!isLoginPage && !isApi && !userCookie) {
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (userCookie) {
+    try {
+      const session = JSON.parse(userCookie);
+      const isChangePasswordPage = request.nextUrl.pathname.startsWith("/cambiar-password");
+      
+      if (session.mustChangePassword && !isChangePasswordPage && !isApi) {
+        return NextResponse.redirect(new URL("/cambiar-password", request.url));
+      }
+      
+      if (!session.mustChangePassword && isChangePasswordPage) {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+    } catch {
+      // Si la cookie está corrupta
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
   }
 
   return NextResponse.next();
