@@ -300,7 +300,6 @@ export default function DashboardClient({ registros, session }: { registros: Reg
               En vivo
             </span>
           </div>
-          <p className="text-slate-500 mt-1 font-medium">Anexo II • Acciones Correctivas de Auditoría</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           {session?.role === 'admin' && (
