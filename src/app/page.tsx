@@ -50,6 +50,7 @@ export default async function Home() {
             responsable: item.field_13 || item.responsable || "-",
             estadoObservacion: extractValue(item.field_14 || item.estadoObservacion) || "Pendiente",
             createdAt: item.Created || item.fecha || new Date().toISOString(),
+            equipo: item.Equipo || item.equipo || item.field_15 || "", // Nueva columna
           };
         });
 
@@ -57,16 +58,8 @@ export default async function Home() {
         
         // APLICAR FILTRO POR ROL
         if (session) {
-          if (session.role === 'auditoria_interna') {
-            registros = registros.filter((r: any) => 
-              String(r.gerenciaResponsable).toLowerCase().includes('interna') || 
-              String(r.responsable).toLowerCase() === session.email.toLowerCase()
-            );
-          } else if (session.role === 'auditoria_operaciones') {
-            registros = registros.filter((r: any) => 
-              String(r.gerenciaResponsable).toLowerCase().includes('operaciones') ||
-              String(r.responsable).toLowerCase() === session.email.toLowerCase()
-            );
+          if (session.role === 'auditoria_interna' || session.role === 'auditoria_operaciones') {
+            registros = registros.filter((r: any) => r.equipo === session.role);
           }
           // 'admin' y 'gerente' ven todos
         }
