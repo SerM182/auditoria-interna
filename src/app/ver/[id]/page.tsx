@@ -8,7 +8,7 @@ import { diasRestantes, situacionPlazo } from "@/lib/auditoria";
 function formatDate(dateString: string | null) {
   if (!dateString) return "No especificada";
   const date = new Date(dateString);
-  return date.toLocaleDateString("es-AR");
+  return date.toLocaleDateString("es-AR", { timeZone: 'UTC' });
 }
 
 /** Mismo semáforo de vencimientos que el panel, sobre el header oscuro de la ficha. */

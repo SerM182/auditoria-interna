@@ -524,7 +524,7 @@ export default function DashboardClient({ registros }: { registros: Registro[] }
                       <td className="px-5 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
                           <Calendar size={14} className="text-slate-400" />
-                          {new Date(reg.fecha).toLocaleDateString('es-AR')}
+                          {new Date(reg.fecha).toLocaleDateString('es-AR', { timeZone: 'UTC' })}
                         </div>
                       </td>
                       <td className="px-5 py-4 whitespace-nowrap text-sm text-slate-600 font-medium">{reg.gerenciaResponsable}</td>
