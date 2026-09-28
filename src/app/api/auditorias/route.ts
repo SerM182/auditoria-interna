@@ -81,6 +81,9 @@ export async function POST(request: Request) {
       const payload = {
         ...data,
         nHallazgos: parseInt(data.nHallazgos, 10),
+        fechaImplementacionCorreccion: data.fechaImplementacionCorreccion || null,
+        fechaVerificacionImplementacion: data.fechaVerificacionImplementacion || null,
+        fechaEvaluacionEficacia: data.fechaEvaluacionEficacia || null,
         equipo: equipo
       };
 

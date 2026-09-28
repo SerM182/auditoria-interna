@@ -76,6 +76,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         ...data,
         id: id,
         nHallazgos: parseInt(data.nHallazgos, 10),
+        fechaImplementacionCorreccion: data.fechaImplementacionCorreccion || null,
+        fechaVerificacionImplementacion: data.fechaVerificacionImplementacion || null,
+        fechaEvaluacionEficacia: data.fechaEvaluacionEficacia || null,
         equipo: equipo
       };
 
