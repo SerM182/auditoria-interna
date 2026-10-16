@@ -24,32 +24,50 @@ export function matchesRole(registro: any, role?: string, userEmail?: string): b
 
   const normEquipo = normalizeText(registro.equipo);
   const normGerencia = normalizeText(registro.gerenciaResponsable);
-  const normResp = String(registro.responsable || '').toLowerCase();
+  const normResp = normalizeText(registro.responsable);
   const normEmail = String(userEmail || '').toLowerCase();
 
+  // 1. Si el usuario logueado es el responsable directo del hallazgo (por email o por nombre), siempre lo ve
+  if (normEmail) {
+    const userPrefix = normEmail.split('@')[0];
+    const userParts = userPrefix.split(/[._-]/).map(normalizeText).filter((p: string) => p.length >= 3);
+    for (const part of userParts) {
+      if (normResp.includes(part)) return true;
+    }
+  }
+
+  // 2. Auditoría Interna / Control de Gestión
   if (role === 'auditoria_interna') {
-    // 1. Coincide explícitamente por equipo
-    if (normEquipo.includes('interna')) return true;
+    // Coincide por equipo
+    if (normEquipo.includes('interna') || (normEquipo.includes('auditoria') && !normEquipo.includes('operacion'))) return true;
     
-    // 2. Si no hay equipo explícito (registro antiguo o creado directo en SharePoint),
-    // buscamos por gerencia o responsable para no perder la visualización
+    // Coincide por Gerencia Responsable (ej. "Gerencia de Auditoria y Control de Gestión")
+    if (
+      normGerencia.includes('interna') ||
+      normGerencia.includes('controldegestion') ||
+      normGerencia.includes('gestion') ||
+      (normGerencia.includes('auditoria') && !normGerencia.includes('operacion'))
+    ) {
+      return true;
+    }
+
+    // Si no tiene equipo asignado, pero fue creado por alguien del área
     if (!normEquipo) {
-      if (normGerencia.includes('interna')) return true;
-      if (normEmail && normResp.includes(normEmail)) return true;
-      // Si fue creado por el usuario
       if (registro.creadoPor && String(registro.creadoPor).toLowerCase().includes('interna')) return true;
     }
     return false;
   }
 
+  // 3. Auditoría de Operaciones
   if (role === 'auditoria_operaciones') {
-    // 1. Coincide explícitamente por equipo
+    // Coincide por equipo
     if (normEquipo.includes('operacion') || normEquipo.includes('operaciones')) return true;
     
-    // 2. Si no hay equipo explícito
+    // Coincide por gerencia
+    if (normGerencia.includes('operacion') || normGerencia.includes('operaciones')) return true;
+
+    // Si no tiene equipo asignado
     if (!normEquipo) {
-      if (normGerencia.includes('operacion') || normGerencia.includes('operaciones')) return true;
-      if (normEmail && normResp.includes(normEmail)) return true;
       if (registro.creadoPor && String(registro.creadoPor).toLowerCase().includes('operacion')) return true;
     }
     return false;
