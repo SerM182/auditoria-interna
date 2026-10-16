@@ -36,11 +36,23 @@ export function matchesRole(registro: any, role?: string, userEmail?: string): b
     }
   }
 
-  // 2. Auditoría Interna / Control de Gestión
+  const normCodigo = normalizeText(registro.codigoProyecto);
+
+  // Integrantes reconocidos de cada departamento
+  const isPersonInterna = ['monica', 'mol', 'natalia', 'daniel'].some(name => normResp.includes(name));
+  const isPersonOperaciones = ['german', 'maria', 'mary'].some(name => normResp.includes(name));
+
+  // 2. Departamento de Auditoría Interna (Daniel, Natalia, Mónica, etc.)
   if (role === 'auditoria_interna') {
+    // Si fue cargado/asignado a Daniel, Natalia o Mónica
+    if (isPersonInterna) return true;
+
     // Coincide por equipo
     if (normEquipo.includes('interna') || (normEquipo.includes('auditoria') && !normEquipo.includes('operacion'))) return true;
     
+    // Coincide por código de proyecto (ej. DAI Nº ...)
+    if (normCodigo.includes('dai') || normCodigo.includes('interna')) return true;
+
     // Coincide por Gerencia Responsable (ej. "Gerencia de Auditoria y Control de Gestión")
     if (
       normGerencia.includes('interna') ||
@@ -58,11 +70,17 @@ export function matchesRole(registro: any, role?: string, userEmail?: string): b
     return false;
   }
 
-  // 3. Auditoría de Operaciones
+  // 3. Departamento de Auditoría de Operaciones (Germán, María, etc.)
   if (role === 'auditoria_operaciones') {
+    // Si fue cargado/asignado a Germán o María
+    if (isPersonOperaciones) return true;
+
     // Coincide por equipo
     if (normEquipo.includes('operacion') || normEquipo.includes('operaciones')) return true;
     
+    // Coincide por código de proyecto (ej. DAO Nº ...)
+    if (normCodigo.includes('dao') || normCodigo.includes('operacion')) return true;
+
     // Coincide por gerencia
     if (normGerencia.includes('operacion') || normGerencia.includes('operaciones')) return true;
 
