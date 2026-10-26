@@ -32,7 +32,7 @@ export function matchesRole(registro: any, role?: string, userEmail?: string): b
     const userPrefix = normEmail.split('@')[0];
     const userParts = userPrefix.split(/[._-]/).map(normalizeText).filter((p: string) => p.length >= 3);
     for (const part of userParts) {
-      if (normResp.includes(part)) return true;
+      if (normResp.includes(part) || part.includes(normResp)) return true;
     }
   }
 
@@ -40,7 +40,7 @@ export function matchesRole(registro: any, role?: string, userEmail?: string): b
 
   // Integrantes reconocidos de cada departamento
   const isPersonInterna = ['monica', 'mol', 'natalia', 'daniel'].some(name => normResp.includes(name));
-  const isPersonOperaciones = ['german', 'maria', 'mary'].some(name => normResp.includes(name));
+  const isPersonOperaciones = ['german', 'maria', 'mary', 'brullo'].some(name => normResp.includes(name));
 
   // 2. Departamento de Auditoría Interna (Daniel, Natalia, Mónica, etc.)
   if (role === 'auditoria_interna') {
@@ -70,16 +70,16 @@ export function matchesRole(registro: any, role?: string, userEmail?: string): b
     return false;
   }
 
-  // 3. Departamento de Auditoría de Operaciones (Germán, María, etc.)
+  // 3. Departamento de Auditoría de Operaciones (Germán, María / Brullo, etc.)
   if (role === 'auditoria_operaciones') {
-    // Si fue cargado/asignado a Germán o María
+    // Si fue cargado/asignado a Germán o María (Brullo)
     if (isPersonOperaciones) return true;
 
     // Coincide por equipo
     if (normEquipo.includes('operacion') || normEquipo.includes('operaciones')) return true;
     
-    // Coincide por código de proyecto (ej. DAO Nº ...)
-    if (normCodigo.includes('dao') || normCodigo.includes('operacion')) return true;
+    // Coincide por código de proyecto (ej. DCO, DAO, Operaciones)
+    if (normCodigo.includes('dco') || normCodigo.includes('dao') || normCodigo.includes('operacion') || normCodigo.includes('obras')) return true;
 
     // Coincide por gerencia
     if (normGerencia.includes('operacion') || normGerencia.includes('operaciones')) return true;
