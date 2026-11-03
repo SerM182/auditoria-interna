@@ -47,6 +47,7 @@ export default function EditarRegistro({ params }: { params: Promise<{ id: strin
       });
 
       if (res.ok) {
+        router.refresh();
         router.push("/");
       } else {
         alert("Error al actualizar el registro.");

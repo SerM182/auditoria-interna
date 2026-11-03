@@ -23,6 +23,7 @@ export default function NuevoRegistro() {
       });
 
       if (res.ok) {
+        router.refresh();
         router.push("/");
       } else {
         alert("Error al guardar el registro.");
